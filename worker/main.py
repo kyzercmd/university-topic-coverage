@@ -585,7 +585,7 @@ async def dispatch_forms(body: DispatchRequest) -> JSONResponse:
             continue
 
         # 3b. Build the smart upload link
-        frontend_url = f"http://localhost:3000/upload?token={token}"
+        frontend_url = f"http://localhost:5173/upload?token={token}"
 
         # 3c. Send email via Resend
         try:

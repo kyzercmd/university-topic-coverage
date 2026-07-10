@@ -1,14 +1,16 @@
-"use client";
-
-import { useSearchParams } from "next/navigation";
+import { createFileRoute } from "@tanstack/react-router";
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
-import {
-  CheckCircle2,
-  CloudUpload,
-  Loader2,
-  X,
-} from "lucide-react";
-import { supabase } from "@/lib/supabase";
+import { CheckCircle2, CloudUpload, Loader2, X } from "lucide-react";
+import { supabase } from "../lib/supabase";
+
+export const Route = createFileRoute("/upload")({
+  validateSearch: (search: Record<string, unknown>): { token?: string } => {
+    return {
+      token: (search.token as string) || undefined,
+    };
+  },
+  component: UploadPage,
+});
 
 // ---------------------------------------------------------------------------
 // Types
@@ -27,8 +29,7 @@ interface FileEntry {
 // Inner page
 // ---------------------------------------------------------------------------
 function UploadPageInner() {
-  const searchParams = useSearchParams();
-  const token = searchParams.get("token");
+  const { token } = Route.useSearch();
 
   const [entries, setEntries] = useState<FileEntry[]>([]);
   const [submissionState, setSubmissionState] = useState<"idle" | "processing" | "success">("idle");
@@ -367,7 +368,7 @@ function UploadPageInner() {
 // ---------------------------------------------------------------------------
 // Exported page
 // ---------------------------------------------------------------------------
-export default function UploadPage() {
+function UploadPage() {
   return (
     <Suspense>
       <UploadPageInner />

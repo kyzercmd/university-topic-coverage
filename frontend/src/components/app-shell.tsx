@@ -31,7 +31,7 @@ const navItems: NavItem[] = [
   {
     label: "Course Materials",
     to: "/course-outline",
-    description: "Curriculum & weekly plan",
+    description: "Curriculum",
     icon: FileText,
   },
   {
@@ -49,11 +49,16 @@ export function AppShell({ children }: { children: ReactNode }) {
     <div className="min-h-screen flex bg-background">
       <aside className="w-72 shrink-0 border-r flex flex-col">
         <div className="h-20 flex items-center px-6 border-b">
-          <Link to="/overview" className="flex flex-col leading-tight">
-            <span className="text-base font-semibold tracking-tight">AICAS</span>
-            <span className="text-[11px] text-muted-foreground tracking-tight">
-              Academic Intelligence
-            </span>
+          <Link to="/overview" className="flex items-center gap-3">
+            <div className="flex items-center justify-center bg-primary text-primary-foreground font-bold text-xl rounded-md w-8 h-8 shrink-0">
+              A
+            </div>
+            <div className="flex flex-col leading-tight">
+              <span className="text-base font-semibold tracking-tight">AICAS</span>
+              <span className="text-[11px] text-muted-foreground tracking-tight">
+                Academic Intelligence
+              </span>
+            </div>
           </Link>
         </div>
         <nav className="flex-1 p-3 space-y-2">

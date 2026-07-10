@@ -7,8 +7,8 @@ export const Route = createFileRoute("/")({
 
 function SignInPage() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("admin");
+  const [password, setPassword] = useState("admin");
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -56,15 +56,15 @@ function SignInPage() {
             <form onSubmit={onSubmit} className="space-y-5">
               <div className="space-y-2">
                 <label htmlFor="email" className="text-sm font-medium">
-                  Email
+                  Username
                 </label>
                 <input
                   id="email"
-                  type="email"
+                  type="text"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full h-10 rounded-lg border bg-background px-3 text-sm outline-none transition-colors focus:border-foreground/40"
-                  placeholder="name@university.edu"
+                  placeholder="admin"
                   required
                 />
               </div>
