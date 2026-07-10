@@ -31,7 +31,7 @@ const navItems: NavItem[] = [
   {
     label: "Course Materials",
     to: "/course-outline",
-    description: "Curriculum",
+    description: "Manage curriculum",
     icon: FileText,
   },
   {

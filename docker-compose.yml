@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    environment:
+      # These can be overridden by a local .env file
+      - ENV=development
+    env_file:
+      - ./backend/.env
+    # Optional: if you have dependencies on a database, you could add it here
+    # depends_on:
+    #   - db
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      # Exclude node_modules so we use the container's isolated node_modules
+      - /app/node_modules
+    env_file:
+      - ./frontend/.env.local
+    environment:
+      # If your frontend needs to talk to the backend, specify it here
+      - VITE_API_URL=http://localhost:8000
+    depends_on:
+      - backend
