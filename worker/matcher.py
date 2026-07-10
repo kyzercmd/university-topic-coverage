@@ -72,7 +72,12 @@ async def run_semantic_matching(student_concepts: list[str], supabase_client, co
 
         if best_score >= 0.60 and best_row_id is not None:
             try:
-                supabase_client.table("section_coverage").update({"is_covered": True, "covered_in_week": week_number}).eq("id", best_row_id).execute()
+                percentage = round(best_score * 100, 2)
+                supabase_client.table("section_coverage").update({
+                    "is_covered": True, 
+                    "covered_in_week": week_number,
+                    "match_score": percentage
+                }).eq("id", best_row_id).execute()
                 logger.info(f"Best Match: '{concept}' → '{best_topic_name}' (Score: {best_score:.2f})")
             except Exception as exc:
                 logger.error(f"Failed to update section_coverage for id {best_row_id}: {exc}")

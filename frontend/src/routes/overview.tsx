@@ -129,6 +129,8 @@ function OverviewPage() {
            }
        } catch (err) {
            console.error("Failed to fetch dashboard data:", err);
+       } finally {
+           if (!ignore) setAnalyzed(true);
        }
     }
     fetchData();
@@ -208,7 +210,7 @@ function OverviewPage() {
         <div className="mt-14">
           <AnalysisLoader
             title="Generating Curriculum Analytics"
-            onDone={() => setAnalyzed(true)}
+            messages={["Fetching real-time insights..."]}
           />
         </div>
       ) : (
@@ -227,23 +229,7 @@ function OverviewPage() {
         </div>
       )}
 
-      {showSummary && summary && !summaryReady && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="w-full max-w-md rounded-2xl border bg-card shadow-2xl">
-            <AnalysisLoader
-              title="Preparing Executive Overview"
-              messages={[
-                "Aggregating section analytics...",
-                "Computing curriculum coverage...",
-                "Compiling administrative recommendations...",
-                "Finalizing report...",
-              ]}
-              onDone={() => setSummaryReady(true)}
-            />
-          </div>
-        </div>
-      )}
-      {showSummary && summary && summaryReady && (
+      {showSummary && summary && (
         <SummaryModal
           teacher={teacher}
           course={course}
@@ -470,11 +456,7 @@ function SummaryModal({
       `Coverage variance of ${variance}% observed between sections; instructional pacing is uneven.`,
     );
   }
-  if (laggingSection && laggingSection.coverage < 85) {
-    remarks.push(
-      `${laggingSection.name} is approximately ${Math.max(1, laggingSection.weeksTotal - laggingSection.weeksCovered - 1)} instructional week(s) behind the expected academic calendar.`,
-    );
-  }
+
   if (summary.totalMissing > 0) {
     remarks.push(
       `${summary.totalMissing} curriculum topic${summary.totalMissing === 1 ? "" : "s"} remain pending before the next assessment window.`,

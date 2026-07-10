@@ -708,12 +708,15 @@ async def get_dashboard_overview(course_id: str, section_id: str):
     
     weeks_covered_str = f"{current_week}/{total_weeks}"
     
+    match_scores = [row.get("match_score") for row in rows if row.get("is_covered") == True and row.get("match_score") is not None]
+    confidence_score = round(sum(match_scores) / len(match_scores)) if match_scores else 0
+
     return DashboardOverviewResponse(
         coverage_percentage=coverage_percentage,
         weeks_covered_str=weeks_covered_str,
         covered_topics_count=covered_topics_count,
         pending_topics_count=pending_topics_count,
-        confidence_score=94,
+        confidence_score=confidence_score,
         missing_topics=missing_topics,
         weekly_progress=weekly_progress,
         current_week=current_week
@@ -790,6 +793,9 @@ async def get_faculty_overview(course_id: str, faculty_id: str):
         current_week = max(covered_weeks_nums) if covered_weeks_nums else 1
         weeks_covered_str = f"{current_week}/{total_weeks}"
         
+        match_scores = [row.get("match_score") for row in rows if row.get("is_covered") == True and row.get("match_score") is not None]
+        confidence_score = round(sum(match_scores) / len(match_scores)) if match_scores else 0
+        
         section_responses.append(
             DashboardOverviewResponse(
                 section_id=str(sec_id),
@@ -798,7 +804,7 @@ async def get_faculty_overview(course_id: str, faculty_id: str):
                 weeks_covered_str=weeks_covered_str,
                 covered_topics_count=covered_topics_count,
                 pending_topics_count=pending_topics_count,
-                confidence_score=94,
+                confidence_score=confidence_score,
                 missing_topics=missing_topics,
                 weekly_progress=weekly_progress,
                 current_week=current_week

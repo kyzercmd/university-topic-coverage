@@ -223,16 +223,28 @@ const SECTION_POOL = [
 
 // --- Teachers per course & sections per teacher-course ---------------
 
-export function teachersForCourse(course: string): string[] {
+export function teachersForCourse(course: string, singleFaculty: boolean = false): string[] {
   const rng = mulberry32(hash("teachers:" + course));
-  const count = 6 + Math.floor(rng() * 2); // 6–7
-  const indices = new Set<number>();
-  while (indices.size < count) {
-    indices.add(Math.floor(rng() * FACULTY.length));
+  let result: string[];
+
+  if (singleFaculty) {
+    const index = Math.floor(rng() * FACULTY.length);
+    result = [FACULTY[index]];
+  } else {
+    const count = 6 + Math.floor(rng() * 2); // 6–7
+    const indices = new Set<number>();
+    while (indices.size < count) {
+      indices.add(Math.floor(rng() * FACULTY.length));
+    }
+    result = Array.from(indices).map((i) => FACULTY[i]);
   }
-  const result = Array.from(indices).map((i) => FACULTY[i]);
-  if (course === "Object Oriented Programming" && !result.includes("Muhammad Abu Rayan")) {
-    result[0] = "Muhammad Abu Rayan";
+  
+  if (course === "Object Oriented Programming") {
+    if (singleFaculty) {
+      result[0] = "Muhammad Abu Rayan";
+    } else if (!result.includes("Muhammad Abu Rayan")) {
+      result[0] = "Muhammad Abu Rayan";
+    }
   }
   return result;
 }

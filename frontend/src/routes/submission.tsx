@@ -144,7 +144,7 @@ function StudentFlow({ onBack }: { onBack: () => void }) {
   };
   const onTab = (t: "submission" | "responses") => {
     setTab(t);
-    if (t === "responses") setResponsesReady(false);
+    if (t === "responses") setResponsesReady(true);
   };
 
   const ready = Boolean(department && course && assessment);
@@ -231,8 +231,11 @@ function StudentFlow({ onBack }: { onBack: () => void }) {
                         week: assessment,
                       }),
                     });
+                    setSending(false);
+                    setSent(true);
                   } catch (err) {
                     console.error("Failed to dispatch form", err);
+                    setSending(false);
                   }
                 }}
                 disabled={sending}
@@ -259,12 +262,7 @@ function StudentFlow({ onBack }: { onBack: () => void }) {
       )}
 
       {sending && (
-        <SendFormAnimation
-          onDone={() => {
-            setSending(false);
-            setSent(true);
-          }}
-        />
+        <SendFormAnimation />
       )}
 
       {sent && (
@@ -274,19 +272,13 @@ function StudentFlow({ onBack }: { onBack: () => void }) {
   );
 }
 
-function SendFormAnimation({ onDone }: { onDone: () => void }) {
+function SendFormAnimation() {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
       <div className="w-full max-w-md rounded-2xl border bg-card shadow-2xl">
         <AnalysisLoader
           title="Distributing Submission Forms"
-          messages={[
-            "Sending Forms...",
-            "Sending Emails...",
-            "Delivering...",
-            "Forms Successfully Sent",
-          ]}
-          onDone={onDone}
+          messages={["Sending Forms..."]}
         />
       </div>
     </div>
@@ -383,9 +375,8 @@ function ResponsesGallery({ course }: { course: string }) {
 
 
 function buildFacultyRoster() {
-  return FACULTY.slice(0, 12).map((name, i) => {
-    const course =
-      COURSES.find((c) => teachersForCourse(c).includes(name)) ?? COURSES[i % COURSES.length];
+  return COURSES.slice(0, 12).map((course, i) => {
+    const name = teachersForCourse(course, true)[0];
     const sections = sectionsForTeacherCourse(name, course);
     return {
       id: `F-${2100 + i + 1}`,
